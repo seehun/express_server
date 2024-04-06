@@ -1,0 +1,14 @@
+{
+  "articles": [
+    {
+      "title": "put으로 수정!",
+      "contents": "updated",
+      "id": "1d24d6d3-2cee-49d2-a420-5a7d63dea26b"
+    },
+    {
+      "title": "title2",
+      "content": "content",
+      "id": "f72a6a03-3402-4270-b725-ab8b9fc10b04"
+    }
+  ]
+}
