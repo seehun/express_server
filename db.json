@@ -6,9 +6,14 @@
       "id": "1d24d6d3-2cee-49d2-a420-5a7d63dea26b"
     },
     {
-      "title": "title2",
-      "content": "content",
+      "title": "put으로 수정!",
+      "contents": "contents",
       "id": "f72a6a03-3402-4270-b725-ab8b9fc10b04"
+    },
+    {
+      "title": "title3",
+      "content": "content",
+      "id": "5837dcbf-2e33-4a48-97ef-14e06a8fe360"
     }
   ]
 }
