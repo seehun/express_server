@@ -1,6 +1,11 @@
 import { randomUUID } from "crypto";
 import express from "express";
 import db from "../db.js";
+import {
+  articleCreateSchema,
+  articleUpdateSchema,
+  articlePartialUpdateSchema,
+} from "../schemas/article.js";
 
 const router = express.Router();
 
@@ -8,6 +13,20 @@ const router = express.Router();
 
 // 게시글 생성
 router.post("/articles", (req, res) => {
+  res.set("Content-Type", "application/vnd.hal+json");
+  const { error, value } = articleCreateSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({
+      _links: {
+        self: {
+          href: req.originalUrl,
+        },
+      },
+      message: error.details[0].message,
+    });
+  }
+
   const article = {
     ...req.body,
     id: randomUUID(),
@@ -16,8 +35,7 @@ router.post("/articles", (req, res) => {
   db.data.articles.push(article);
   db.write();
 
-  res.set("Content-Type", "application/vnd.hal+json");
-  res.status(201).json({
+  return res.status(201).json({
     _links: {
       self: {
         href: req.originalUrl,
@@ -37,7 +55,7 @@ router.post("/articles", (req, res) => {
 // 게시글 목록 조회
 router.get("/articles", (req, res) => {
   res.set("Content-Type", "application/vnd.hal+json");
-  res.status(200).json({
+  return res.status(200).json({
     _links: {
       self: {
         href: req.originalUrl,
@@ -64,7 +82,7 @@ router.get("/articles/:articleId", (req, res) => {
 
   res.set("Content-Type", "application/vnd.hal+json");
   if (!article) {
-    res.status(404).json({
+    return res.status(404).json({
       _links: {
         self: {
           href: req.originalUrl,
@@ -78,7 +96,7 @@ router.get("/articles/:articleId", (req, res) => {
     });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     _links: {
       self: {
         href: req.originalUrl,
@@ -99,13 +117,14 @@ router.get("/articles/:articleId", (req, res) => {
 
 // 게시글 수정
 router.put("/articles/:articleId", (req, res) => {
+  res.set("Content-Type", "application/vnd.hal+json");
+
   const { articleId } = req.params;
   const articleIndex = db.data.articles.findIndex(({ id }) => id === articleId);
 
-  res.set("Content-Type", "application/vnd.hal+json");
   if (articleIndex === -1) {
     //게시글이 존재하지 않으면 -1을 리턴
-    res.status(404).json({
+    return res.status(404).json({
       _links: {
         self: {
           href: req.originalUrl,
@@ -119,11 +138,25 @@ router.put("/articles/:articleId", (req, res) => {
     });
   }
 
-  const updatedArticle = { ...req.body, id: articleId };
+  // 게시글 존재 검증 후 값 검증 수행
+  const { error, value } = articleUpdateSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({
+      _links: {
+        self: {
+          href: req.originalUrl,
+        },
+      },
+      message: error.details[0].message,
+    });
+  }
+
+  const updatedArticle = { ...value, id: articleId };
 
   db.data.articles[articleIndex] = updatedArticle;
   db.write();
-  res.status(200).json({
+  return res.status(200).json({
     _links: {
       self: {
         href: req.originalUrl,
@@ -144,12 +177,14 @@ router.put("/articles/:articleId", (req, res) => {
 
 // 게시글 수정
 router.patch("/articles/:articleId", (req, res) => {
+  res.set("Content-Type", "application/vnd.hal+json");
+
   const { articleId } = req.params;
   const articleIndex = db.data.articles.findIndex(({ id }) => id === articleId);
 
   res.set("Content-Type", "application/vnd.hal+json");
   if (articleIndex === -1) {
-    res.status(404).json({
+    return res.status(404).json({
       _links: {
         self: {
           href: req.originalUrl,
@@ -163,17 +198,29 @@ router.patch("/articles/:articleId", (req, res) => {
     });
   }
 
+  // 게시글 존재 검증 후 값 검증 수행
+  const { error, value } = articleUpdateSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({
+      _links: {
+        self: {
+          href: req.originalUrl,
+        },
+      },
+      message: error.details[0].message,
+    });
+  }
+
   const updatedArticle = db.data.articles[articleIndex];
 
-  for (const key of Object.keys(req.body)) {
-    updatedArticle[key] = req.body[key];
+  for (const key of Object.keys(value)) {
+    updatedArticle[key] = value[key];
   }
 
   db.data.articles[articleIndex] = updatedArticle;
   db.write();
 
-  res.set("Content-Type", "application/vnd.hal+json");
-  res.status(200).json({
+  return res.status(200).json({
     _links: {
       self: {
         href: req.originalUrl,
@@ -199,7 +246,7 @@ router.delete("/articles/:articleId", (req, res) => {
 
   res.set("Content-Type", "application/vnd.hal+json");
   if (articleIndex === -1) {
-    res.status(404).json({
+    return res.status(404).json({
       _links: {
         self: {
           href: req.originalUrl,
@@ -214,7 +261,7 @@ router.delete("/articles/:articleId", (req, res) => {
   }
   db.data.articles.splice(articleIndex, 1);
   db.write();
-  res.status(200).json({
+  return res.status(200).json({
     _links: {
       self: {
         href: req.originalUrl,
