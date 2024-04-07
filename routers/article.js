@@ -26,7 +26,6 @@ router.post("/articles", (req, res) => {
     ...req.body,
     id: randomUUID(),
   };
-  //   data.push(article);
   db.data.articles.push(article);
   db.write();
 
@@ -141,7 +140,6 @@ router.patch("/articles/:articleId", (req, res) => {
   const { articleId } = req.params;
   const articleIndex = db.data.articles.findIndex(({ id }) => id === articleId);
 
-  res.set("Content-Type", "application/vnd.hal+json");
   if (articleIndex === -1) {
     return res.status(404).json({
       _links: {

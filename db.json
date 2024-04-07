@@ -29,5 +29,31 @@
       "content": "content",
       "id": "3210a275-aae5-48b4-94c8-97fd7fa484d3"
     }
+  ],
+  "users": [
+    {
+      "email": "Vaughn35@hotmail.com",
+      "username": "Florian.Mohr",
+      "password": "VXPYvd5BfcfSuay",
+      "id": "ce3a2363-a377-4135-8e7d-c56588271d6c"
+    },
+    {
+      "email": "Bette43@yahoo.com",
+      "username": "Robb75",
+      "password": "ubVhVySxBD3lrpb",
+      "id": "7481de63-b8dd-4868-94a2-c199de81412d"
+    },
+    {
+      "email": "Orpha53@hotmail.com",
+      "username": "Frankie.DuBuque",
+      "password": "bqTVtHUibVA3I4H",
+      "id": "87653de6-8fed-44f1-ad6f-db2f24116c8d"
+    },
+    {
+      "email": "Daron_Bayer63@gmail.com",
+      "username": "Xavier_Rice",
+      "password": "qGGU1pL7wyRlDZ2",
+      "id": "2ab77d57-6085-4add-beef-10baad4e3cd2"
+    }
   ]
 }
