@@ -3,10 +3,9 @@ import { authCreateSchema } from "../schemas/auth.js";
 import db from "../db.js";
 import { compareSync } from "bcrypt";
 import * as jose from "jose";
+import { secret } from "../core/auth.js";
 
 const router = express.Router();
-
-const secret = new TextEncoder().encode("SECRET");
 
 // 로그인 ->  토큰 반환
 router.post("", async (req, res) => {
