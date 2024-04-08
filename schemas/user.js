@@ -16,5 +16,4 @@ export const userPartialUpdateSchema = Joi.object({
   email: Joi.string(),
   username: Joi.string(),
   password: Joi.string(),
-  passwordValidation: Joi.string().required(),
-}).min(2);
+}).min(1);

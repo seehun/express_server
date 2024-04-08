@@ -7,6 +7,7 @@ import {
 } from "../schemas/user.js";
 import db from "../db.js";
 import { hashSync, compareSync } from "bcrypt";
+import authMiddleware from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -82,7 +83,7 @@ router.get("/:userId", (req, res) => {
 });
 
 //유저 정보 수정
-router.patch("/:userId", (req, res) => {
+router.patch("/:userId", authMiddleware, (req, res) => {
   const { userId } = req.params;
   const userIndex = db.data.users.findIndex(({ id }) => id === userId);
 
@@ -98,6 +99,13 @@ router.patch("/:userId", (req, res) => {
     });
   }
 
+  // 토큰을 발급받은 유저와 수정하려는 유저가 동일한 유저인지 체크
+  if (req.auth.user_id !== userId) {
+    return res.status(403).json({
+      message: "올바르지 않은 접근",
+    });
+  }
+
   // 게시글 존재 검증 후 값 검증 수행
   const { error, value } = userPartialUpdateSchema.validate(req.body);
   if (error) {
@@ -107,18 +115,10 @@ router.patch("/:userId", (req, res) => {
   }
 
   const updatedUser = db.data.users[userIndex];
-  //authentication
-  if (!compareSync(value.passwordValidation, updatedUser.password)) {
-    //password 불일치
-    return res.status(401).json({
-      message: "인증되지 않은 유저입니다",
-    });
-  }
 
   for (const key of Object.keys(value)) {
     updatedUser[key] = value[key];
   }
-
   db.data.users[userIndex] = updatedUser;
   db.write();
 
@@ -141,7 +141,7 @@ router.patch("/:userId", (req, res) => {
 });
 
 //유저 삭제
-router.delete("/:userId", (req, res) => {
+router.delete("/:userId", authMiddleware, (req, res) => {
   const { userId } = req.params;
   const userIndex = db.data.users.findIndex(({ id }) => id === userId);
 
@@ -157,13 +157,10 @@ router.delete("/:userId", (req, res) => {
     });
   }
 
-  // 게시글 존재 검증 후 값 검증 수행
-  const deletedUser = db.data.users[userIndex];
-  //authentication
-  if (!compareSync(req.body.passwordValidation, deletedUser.password)) {
-    //password 불일치
-    return res.status(401).json({
-      message: "인증되지 않은 유저입니다",
+  // 토큰을 발급받은 유저와 수정하려는 유저가 동일한 유저인지 체크
+  if (req.auth.user_id !== userId) {
+    return res.status(403).json({
+      message: "올바르지 않은 접근",
     });
   }
 

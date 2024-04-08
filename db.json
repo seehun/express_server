@@ -57,9 +57,10 @@
     },
     {
       "email": "Rashawn63@yahoo.com",
-      "username": "me",
+      "username": "me2",
       "password": "$2b$10$dACCgBuvrG.ZrAt0IORDuuQipza5KyDUoeZnJDIRmBm5b0I1QYMga",
-      "id": "afe8422e-aec3-4e20-8966-ec09bf1af757"
+      "id": "afe8422e-aec3-4e20-8966-ec09bf1af757",
+      "passwordValidation": "123"
     }
   ]
 }
